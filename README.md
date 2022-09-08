@@ -5,7 +5,10 @@ This repository was created to initiate the start of development process.
 
 **Structure**
 controllers - contains all the local package routed from the main file.
+
 models - would contain all the schema section for database.
 views - here lies the EJS files.
+
 public - would contain all the static resources.
+
 app.js - THE BRAIN
