@@ -5,7 +5,9 @@ app.use(express.json());
 
 app.get("/", (req,res)=>{
   try{
-    res.send("Greeting ADMIN!");
+    res.write("Welcome!\n");
+    res.write("Admin panel....");
+    res.end();
   }catch(err){
     console.log(err);
   }

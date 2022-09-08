@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require('mongoose');
+var createError = require('http-errors');
 
 // importing local packages
 var userRouter = require("./controllers/users");
@@ -22,7 +23,6 @@ con.on('open', ()=> {
 // configuring app
 const app = express();
 app.set('view engine', 'ejs');
-app.use(express.static("public"));
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 
