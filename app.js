@@ -1,10 +1,21 @@
 // importing libraried
 const express = require("express");
 const app = express();
-
+require("dotenv").config();
+var session = require('express-session');
 const bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
+// sessions set-up
+var sessionVar;
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(session({
+    secret: "thisismysecrctekeyforthisnewproject",
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay },
+    resave: false
+}));
 
 const ejs = require("ejs");
 // const mongoose = require('mongoose');
