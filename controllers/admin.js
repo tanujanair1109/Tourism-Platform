@@ -1,4 +1,5 @@
 var express = require('express');
+var Tool = require("../TOOL");
 
 const User = require("../mongoDB/models/users");
 
@@ -6,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
 app.get("/", (req,res)=>{
   try{
@@ -20,37 +21,28 @@ app.get("/", (req,res)=>{
 
 app.post("/register",async (req,res)=>{
   try{
-    const count = await User.estimatedDocumentCount()+1;
     const {email,password} = req.body;
     if(!(email,password)){
-      res.status(400).json({status:400,message:"Insufficient input",success:false});
-      res.redirect("/register");
+      res.status(400).send("User already exists.");
     }
     const old = await User.findOne({email});
-    console.log(old);
     if(old){
-      res.status(409).json({status:409,message:"User already exists",success:false,data:old});
+      res.status(409).send(old);
     }
     else{
       let encryptedPassword = await bcrypt.hash(password, 10);
       const user = await User.create({
-        uid:'A'+count,
         email,
         password:encryptedPassword,
         role:'admin'
       })
-      const token = jwt.sign(
-        {user_id: user._id,email},
-        process.env.TOKEN_KEY,
-        {expiresIn:'2h'},
-      );
+      const token = Tool.SIGN(user,email);
       user.token = token;
-      console.log(user);
-      res.status(201).json({status:201,message:"Admin created",success:true,data:user});
+      res.status(201).send(user);
     }
   }catch(err){
     console.log(err);
-    res.status(500).json({status:500,message:"Internal server error",success:false,err:err});
+    res.status(500).send(err);
   }
 });
 
@@ -58,25 +50,18 @@ app.post('/login', async(req,res)=>{
   try{
     const {email,password} = req.body;
     if(!(email,password)){
-      res.status(400).json({status:400,message:"Insufficient input",success:false});
-      res.redirect("/login");
+      res.status(400).send("Invalid credentials");
     }else{
       const user = await User.findOne({email});
       if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
+      const token = Tool.SIGN(user,email);
       user.token = token;
-      res.status(200).json({status:200,message:"User logged-in",success:true,data:user});
+      res.status(200).send(user);
     }
   }
   }catch(err){
     console.log(err);
-    res.status(500).json({status:500,message:"Internal server error",success:false,err:err});
+    res.status(500).send(err);
   }
 })
 

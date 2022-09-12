@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 var sessionVar;
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(session({
-    secret: "thisismysecrctekeyforthisnewproject",
+    secret:process.env.Secret,
     saveUninitialized:true,
     cookie: { maxAge: oneDay },
     resave: false
