@@ -1,36 +1,31 @@
-// importing libraries
-const express = require("express");
+import bodyParser from 'body-parser';
+import express from 'express'
+import dbconnect from './mongoDB/connection.js';
+import userRouter from './routes/usersRouter.js'
+import adminRouter from './routes/adminRouter.js'
+dbconnect();
 const app = express();
-require("dotenv").config();
-const bodyParser = require("body-parser");
-var cookieParser = require('cookie-parser');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json())
 
-
-const ejs = require("ejs");
-// const mongoose = require('mongoose');
-
-// importing local packages
-var userRouter = require("./controllers/users");
-var adminRouter = require("./controllers/admin");
-
-
-// database connectivity
-var Connect = require("./mongoDB/connection");
-Connect.dbconnect();
-
-app.set('view engine', 'ejs');
 app.use(express.static("public"));
 
 
 // configuring routes
-app.use("/",userRouter);
+app.get("/",(req,res)=>{
+  try{
+      res.send("<h1>Hello Welcome To Tourism Platform")
+  }catch(err){
+    res.send('some error occurred')
+    console.log(err);
+  }
+})
+app.use("/user",userRouter);
 app.use("/admin",adminRouter);
 
 // PORT
-let port = process.env.PORT||3000;
+let port = process.env.PORT||8000;
 app.listen(port, function() {
   console.log("<---------------Server started on PORt:"+port+"--------------->");
 });
 
-module.exports = app;

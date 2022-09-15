@@ -1,10 +1,13 @@
-var express = require('express');
-const mongoose = require("mongoose");
-require("dotenv").config();
+
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express();
 
-function dbconnect(){
+const  dbconnect = () =>{
   // let url = process.env.MONGO_URL||"mongodb+srv://admin-tushar:testpassword@firstcluster.vc5uokn.mongodb.net/cgtourism";
   let url = process.env.MONGO_URL;
   mongoose.connect(url, {
@@ -17,4 +20,4 @@ function dbconnect(){
   });
 }
 
-module.exports = {dbconnect};
+export default dbconnect;
