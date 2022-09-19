@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import express from 'express'
 import dbconnect from './mongoDB/connection.js';
 import userRouter from './routes/usersRouter.js'
-import adminRouter from './routes/adminRouter.js'
+import superadminRouter from './routes/superadminRouter.js'
 dbconnect();
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
@@ -21,11 +21,10 @@ app.get("/",(req,res)=>{
   }
 })
 app.use("/user",userRouter);
-app.use("/admin",adminRouter);
+app.use("/superadmin",superadminRouter);
 
 // PORT
 let port = process.env.PORT||8000;
 app.listen(port, function() {
   console.log("<---------------Server started on PORt:"+port+"--------------->");
 });
-
