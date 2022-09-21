@@ -1,13 +1,11 @@
-
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv'
-
-dotenv.config()
+var express = require('express');
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const app = express();
 
-const  dbconnect = () =>{
+function dbconnect(){
+  // let url = process.env.MONGO_URL||"mongodb+srv://admin-tushar:testpassword@firstcluster.vc5uokn.mongodb.net/cgtourism";
   let url = process.env.MONGO_URL;
   mongoose.connect(url, {
       useNewUrlParser: true,
@@ -19,4 +17,4 @@ const  dbconnect = () =>{
   });
 }
 
-export default dbconnect;
+module.exports = {dbconnect};
