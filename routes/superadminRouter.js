@@ -1,17 +1,20 @@
 import express from 'express';
-import { loginSuperAdmin, registerSuperAdmin, superadminProfile,
-        addPlace, getPlaces }
-        from '../controllers/superadminController.js';
+
+import { loginUser, registerUser, userProfile} from '../controllers/userController.js';
+
+import {addPlace, getPlaces} from '../controllers/placeController.js';
+
+import tokenCheck from '../middleware/tokenCheck.js';
 
 const router = express.Router()
 
-router.post('/register',registerSuperAdmin);
+router.post('/register',registerUser);
 
-router.post('/login', loginSuperAdmin);
+router.post('/login', loginUser);
 
-router.post('/add-place',addPlace);
+router.get('/superadmin-profile',tokenCheck.isSuperadmin, userProfile);
 
-router.get('/superadmin-profile',superadminProfile);
+router.post('/add-place',tokenCheck.isSuperadmin, addPlace);
 
 router.get('/places-list', getPlaces);
 
