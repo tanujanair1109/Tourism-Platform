@@ -1,6 +1,6 @@
 import User from "../mongoDB/models/users.js";
 import Place from "../mongoDB/models/places.js";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 import generateToken from "../utilities/generateToken.js";
 
 export const registerUser = async (req,res)=>{
