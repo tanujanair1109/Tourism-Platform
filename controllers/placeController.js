@@ -1,5 +1,7 @@
 import Place from "../mongoDB/models/places.js";
+import Csv from "jquery-csv";
 
+import Fs from "fs";
 
 export const addPlace = async(req,res)=>{
   try{
@@ -23,11 +25,28 @@ export const addPlace = async(req,res)=>{
   }
 }
 
+export const addCSV = async(req,res)=>{
+  try{
+    if(req.file){
+      var data = await  Fs.readFile(req.file.path,'utf8', function(err,data){
+        var final = Csv.toObjects(data);
+         final.forEach(function(item){
+            Place.create(item);
+        })
+        res.status(200).send("Data upload success!");
+      });
+  }
+} catch(err){
+    console.log(err);
+    res.status(500).send(err);
+  }
+}
 
 export const getPlaces = async(req,res)=>{
   try{
-    // const places = await Place.find().skip((page-1)*1).limit(1);
-    const places = await Place.find();
+
+    const places = await Place.find().skip(1).limit(5);
+    // const places = await Place.find();
     if(places.length<1){
       res.status(400).send("No places data found");
     }else{
