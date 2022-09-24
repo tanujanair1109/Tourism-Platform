@@ -19,7 +19,7 @@ import multer from "multer";
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, path.join(__dirname, '../public/assets/csv'));
+      cb(null, path.join(__dirname, '../assets/csv'));
   },
   filename: (req, file, cb) => {
       cb(null, Date.now() + file.originalname);
