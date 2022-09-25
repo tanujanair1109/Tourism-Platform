@@ -2,7 +2,7 @@ import express from 'express';
 
 import { loginUser, registerUser, userProfile} from '../controllers/userController.js';
 
-import {addPlace, addCSV, getPlaces} from '../controllers/placeController.js';
+import {addPlace, addCSV, getPlaces, getFilteredPlaces} from '../controllers/placeController.js';
 
 import tokenCheck from '../middleware/tokenCheck.js';
 
@@ -41,5 +41,6 @@ router.post('/add-place',tokenCheck.isSuperadmin, addPlace);
 router.post('/add-csv',tokenCheck.isSuperadmin,upload.single('file'),addCSV);
 
 router.get('/places-list', getPlaces);
+router.post('/places-list', getFilteredPlaces);
 
 export default router;
