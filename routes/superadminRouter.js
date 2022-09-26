@@ -1,8 +1,8 @@
 import express from 'express';
 
-import { loginUser, registerUser, userProfile} from '../controllers/userController.js';
+import { loginUser, registerUser, userProfile, createAdmin, userUpdate, userDelete} from '../controllers/userController.js';
 
-import {addPlace, addCSV, getPlaces, getFilteredPlaces} from '../controllers/placeController.js';
+import {addPlace, addCSV, uploadZip, getPlaces, getFilteredPlaces} from '../controllers/placeController.js';
 
 import tokenCheck from '../middleware/tokenCheck.js';
 
@@ -29,18 +29,30 @@ var storage = multer.diskStorage({
 var upload = multer({storage:storage});
 // ///////////////////////////////
 
-
-router.post('/register',registerUser);
-
+// MIDDLEWARE
 router.post('/login', loginUser);
 
-router.get('/superadmin-profile',tokenCheck.isSuperadmin, userProfile);
+router.use(tokenCheck.isSuperadmin);
 
-router.post('/add-place',tokenCheck.isSuperadmin, addPlace);
+// ROUTES
+router.post('/register', registerUser);
 
-router.post('/add-csv',tokenCheck.isSuperadmin,upload.single('file'),addCSV);
+router.post('/admin-create',createAdmin);
+
+router.get('/superadmin-profile', userProfile);
+
+router.post('/user-update',userUpdate);
+
+router.post('/user-delete', userDelete);
+
+router.post('/add-place', addPlace);
+
+router.post('/add-csv',upload.single('file'),addCSV);
+
+router.post('/upload-zip',upload.single('zip'),uploadZip);
 
 router.get('/places-list', getPlaces);
+
 router.post('/places-list', getFilteredPlaces);
 
 export default router;

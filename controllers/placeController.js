@@ -1,7 +1,14 @@
 import Place from "../mongoDB/models/places.js";
 import Csv from "jquery-csv";
+import paginatedResult from "../utilities/paginate.js";
+import extract from "extract-zip";
 
-import Fs, { stat } from "fs";
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import Fs from "fs";
 
 export const addPlace = async(req,res)=>{
   try{
@@ -21,7 +28,7 @@ export const addPlace = async(req,res)=>{
     }
   }catch(err){
     console.log(err);
-    res.status(500).send(err);
+    res.status(500).send("Internal server error!");
   }
 }
 
@@ -38,23 +45,24 @@ export const addCSV = async(req,res)=>{
   }
 } catch(err){
     console.log(err);
-    res.status(500).send(err);
+    res.status(500).send("Internal server error!");
   }
 }
 
 export const getPlaces = async(req,res)=>{
   try{
 
-    const places = await Place.find().skip(1).limit(5);
+    const places = await Place.find();
     // const places = await Place.find();
     if(places.length<1){
       res.status(400).send("No places data found");
     }else{
-      res.status(200).json({data:places});
+      const pagedata = paginatedResult(places,req.query.page,req.query.limit);
+      res.status(200).json({data:pagedata});
     }
   }catch(err){
     console.log(err);
-    res.status(500).send(err);
+    res.status(500).send("Internal server error!");
   }
 }
 
@@ -71,7 +79,7 @@ export const getFilteredPlaces = async (req,res)=>{
     state = JSON.parse(state)
     query.state = {$in :state}
   }
-    const places = await Place.find(query)     
+    const places = await Place.find(query)
       .skip(1).limit(5);
     if(places.length<1){
       res.status(400).send("No places data found");
@@ -81,5 +89,21 @@ export const getFilteredPlaces = async (req,res)=>{
   }catch(err){
     console.log(err);
     res.status(500).send(err);
+  }
+}
+
+export const uploadZip = async (req,res)=>{
+  try{
+    if(req.file){
+      console.log(req.file);
+      const target = path.join(__dirname,'../unzip_here');
+      await extract(req.file,{dir:target});
+      console.log("Extraction complete");
+    }else{
+      console.log("file not found");
+    }
+  }catch(err){
+    console.log(err);
+    res.status(500).send("Internal server error!");
   }
 }
